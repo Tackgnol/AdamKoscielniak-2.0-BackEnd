@@ -1,4 +1,5 @@
 import json
+from .Exceptions import BadRequest
 
 class Result:
     def __init__(self):
@@ -32,5 +33,7 @@ class Result:
             'Infos': self.Infos,
             'Value': self.Value,
         }
+        if len(self.Errors) > 0:
+            raise(BadRequest("There are errors in the query", payload=responseDict))
         return json.dumps(responseDict)
 
