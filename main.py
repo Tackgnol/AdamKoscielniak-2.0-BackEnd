@@ -11,6 +11,8 @@ import mongoengine
 app = Flask(__name__)
 
 import Controllers.Experience 
+import Controllers.Education
+import Controllers.SkillGroup
 
 cfg = Config()
 

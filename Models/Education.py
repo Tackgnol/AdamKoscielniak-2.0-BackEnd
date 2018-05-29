@@ -1,14 +1,14 @@
 from mongoengine import *
 from .SubModels.Project import Project
-class Experience(Document):
+class Education(Document):
     Id = SequenceField()
-    Employer = StringField(max_length=120, required=True)
-    Position = StringField(max_length=120, required=True)
-    Responsibilities = ListField(StringField(max_length=500), required=True)
-    CurrentEmployer = BooleanField(default=False)
+    School = StringField(max_length=120, required=True)
+    Level = StringField(max_length=120, required=True)
+    Faculty = StringField(max_length=120, required=True)
+    GradeEu = FloatField(min_value=2,max_value=5)
+    GradeUs = StringField(max_length=5)
     BeginDate = DateTimeField(required=True)
     EndDate = DateTimeField(required=True)
     Projects = ListField(EmbeddedDocumentField(Project), required=False)
     Photos = ListField(StringField)
-
 
