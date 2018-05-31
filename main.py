@@ -13,6 +13,8 @@ app = Flask(__name__)
 import Controllers.Experience 
 import Controllers.Education
 import Controllers.SkillGroup
+import Controllers.Certificate
+import Controllers.Hobby
 
 cfg = Config()
 

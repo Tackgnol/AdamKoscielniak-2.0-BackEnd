@@ -10,5 +10,5 @@ class Education(Document):
     BeginDate = DateTimeField(required=True)
     EndDate = DateTimeField(required=True)
     Projects = ListField(EmbeddedDocumentField(Project), required=False)
-    Photos = ListField(StringField)
+    Photos = ListField(URLField(verify_exists=True))
 
