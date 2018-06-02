@@ -8,10 +8,11 @@ class User(Document):
     LastName = StringField(max_length=120)
     Email = EmailField(required=True, unique=True)
     Password = StringField(max_length=100, required=True)
-    AccountType = StringField(max_length=20, required=True)
+    AccountType = StringField(max_length=20)
     Company = EmbeddedDocumentField(Company)
 
 class TokenInfo:
-        def __init__(self, username, roles):
+        def __init__(self, username, roles, Id):
             self.username = username
             self.role = roles
+            self.Id = Id
