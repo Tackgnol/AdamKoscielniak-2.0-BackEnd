@@ -65,7 +65,6 @@ def refresh():
     result = Result()
     username = get_jwt_identity()
     loggingUser = User.objects(Email=username).first()
-    userHash = loggingUser.Password
     userRole = loggingUser.AccountType
     userId = loggingUser.Id
 
