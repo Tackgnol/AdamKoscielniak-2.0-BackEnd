@@ -1,4 +1,4 @@
-from main import app
+from main import app, jwt
 from Models.Experience import Experience
 from GlobalAPi.Result import Result
 from flask import request, Response
@@ -6,9 +6,11 @@ import json
 from datetime import datetime
 import mongoengine
 from mongoengine.errors import InvalidQueryError
+from flask_jwt_extended import jwt_required
 
 
 @app.route('/experience/add', methods=['POST'])
+@jwt_required
 def AddExperience():
     result = Result()
     experience = request.get_json(force=True)
@@ -17,6 +19,7 @@ def AddExperience():
         job = Experience.from_json(experienceJSON)
         job.save()
         result.Value = experience
+
     except mongoengine.errors.ValidationError as e:
         for (field, err) in e.to_dict().items():
             result.AddError(field + " : " + str(err))
@@ -44,6 +47,7 @@ def GetExperienceById(id):
 
 
 @app.route('/experience/<id>', methods=['PUT'])
+@jwt_required
 def UpdateExperienceById(id):
     result = Result()
     update = request.get_json(force=True)
@@ -99,12 +103,14 @@ def GetExperiences():
 
 
 @app.route('/experience/<id>', methods=['DELETE'])
+@jwt_required
 def DeleteExperieceById(id):
     result = Result()
     try:
         toDelete = Experience.objects.filter(Id=id).first()
         toDelete.delete()
-        result.Value = "Element Removed succesfully"
+        result.Value = json.dumps(
+            {'id': id, 'message': 'Succesfully removed element' + id})
     except AttributeError:
         result.AddError(
             'This experience does not exist, perhaps it was already deleted?')

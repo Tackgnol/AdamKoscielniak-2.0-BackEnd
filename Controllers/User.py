@@ -1,26 +1,29 @@
 from main import app, jwt
-from Models.User import User,TokenInfo
+from Models.User import User, TokenInfo
 from GlobalAPi.Result import Result
 from Utils.Encryption import hashPassword, checkPassword
 from Utils.UserValidation import IsUserRoleValid, IsUserAdmin
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
-    get_jwt_identity, jwt_optional, get_jwt_claims, 
+    get_jwt_identity, jwt_optional, get_jwt_claims,
     create_refresh_token, jwt_refresh_token_required
 )
 from flask import Flask, request
 import mongoengine
+
 
 @jwt.user_claims_loader
 def add_claims_to_access_token(user):
     return {
         'role': user.role,
         'Id': user.Id
-        }
+    }
+
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
     return user.username
+
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -31,7 +34,7 @@ def login():
     username = request.json.get('Email', None)
     password = request.json.get('Password', None)
     if not username:
-       result.AddError("Missing username parameter")
+        result.AddError("Missing username parameter")
     if not password:
         result.AddError("Missing password parameter")
 
@@ -59,11 +62,13 @@ def login():
 
     return result.ToResponse()
 
+
 @app.route('/refresh', methods=['POST'])
 @jwt_refresh_token_required
 def refresh():
     result = Result()
     username = get_jwt_identity()
+    loggingUser = User.objects(Email=username).first()
     loggingUser = User.objects(Email=username).first()
     userRole = loggingUser.AccountType
     userId = loggingUser.Id
@@ -119,6 +124,3 @@ def register():
             result.AddError(field + " : " + str(err))
 
     return result.ToResponse()
-
-
-

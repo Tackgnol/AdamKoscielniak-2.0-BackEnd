@@ -13,3 +13,4 @@ class Experience(Document):
     EndDate = DateTimeField(required=True)
     Projects = ListField(EmbeddedDocumentField(Project), required=False)
     Photos = ListField(URLField(verify_exists=True))
+    Location = StringField(max_length=120, required=True)

@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_cors import CORS
 import json
 from flask_mail import Mail, Message
 from flask_jwt_extended import JWTManager
@@ -7,13 +8,15 @@ from Config.config import Config
 from GlobalAPi.Exceptions import BadRequest
 from GlobalAPi.ExceptionHandlers import handle_bad_request
 
+
 import mongoengine
 
 app = Flask(__name__)
+CORS(app, allow_headers=['Authorization', 'Content-Type'])
 
 jwt = JWTManager(app)
 
-import Controllers.Experience 
+import Controllers.Experience
 import Controllers.Education
 import Controllers.SkillGroup
 import Controllers.Certificate
@@ -21,7 +24,7 @@ import Controllers.Hobby
 import Controllers.User
 
 cfg = Config()
-app.config['JWT_SECRET_KEY'] =  cfg.JWT_SECRET
+app.config['JWT_SECRET_KEY'] = cfg.JWT_SECRET
 app.config['JSON_SORT_KEYS'] = False
 app.config['MAIL_SERVER'] = cfg.MAIL_SERVER
 app.config['MAIL_PORT'] = cfg.MAIL_PORT
@@ -41,21 +44,23 @@ def MailPayUResponse(email):
     payUrequestBody = request.data
     headerDict = {}
     payUrequestHeader = request.headers
-    for (key,value) in payUrequestHeader:
+    for (key, value) in payUrequestHeader:
         headerDict[key] = value
 
     mail.send_message(
         subject="Request was sent",
         recipients=[email],
-        body=str(payUrequestBody.decode('utf-8')) + "\n" + json.dumps(headerDict),
+        body=str(payUrequestBody.decode('utf-8')) +
+        "\n" + json.dumps(headerDict),
         sender="emailMonkey@adamkoscielniak.eu.org"
-        )
-    return payUrequestBody 
-    
+    )
+    return payUrequestBody
+
+
 @app.errorhandler(BadRequest)
 def error_handler(error):
-     return handle_bad_request(error)
+    return handle_bad_request(error)
 
 
 if __name__ == "__main__":
-     app.run()
+    app.run()
