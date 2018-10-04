@@ -10,7 +10,6 @@ from flask_jwt_extended import jwt_required
 
 
 @app.route('/experience/add', methods=['POST'])
-@jwt_required
 def AddExperience():
     result = Result()
     experience = request.get_json(force=True)
@@ -60,6 +59,9 @@ def UpdateExperienceById(id):
         del updateDbObj['_id']
         dbObj.update(**updateDbObj)
         result.Value = dbObj.to_json()
+    except mongoengine.errors.ValidationError as e:
+        for (field, err) in e.to_dict().items():
+            result.AddError(field + " : " + str(err))
     except AttributeError:
         result.AddError(
             'This experience does not exist, perhaps you wished to add it?')
@@ -79,7 +81,6 @@ def GetExperiences():
         'to') is not None else '3000-01-01'
     expSkills = request.args.get('skills').split(',') if request.args.get(
         'skills') is not None else []
-
     try:
         parsedDateFrom = datetime.strptime(expFrom, '%Y-%m-%d')
         parsedDateTo = datetime.strptime(expTo, '%Y-%m-%d')
