@@ -1,10 +1,10 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 import json
 from flask_mail import Mail, Message
 from flask_jwt_extended import JWTManager
 from GlobalAPi.Result import Result
-from Config.config import Config
+from Config.Config import Config
 from GlobalAPi.Exceptions import BadRequest
 from GlobalAPi.ExceptionHandlers import handle_bad_request
 
@@ -22,6 +22,7 @@ import Controllers.SkillGroup
 import Controllers.Certificate
 import Controllers.Hobby
 import Controllers.User
+import Controllers.Summary
 
 cfg = Config()
 app.config['JWT_SECRET_KEY'] = cfg.JWT_SECRET
@@ -57,10 +58,11 @@ def MailPayUResponse(email):
     return payUrequestBody
 
 
+@app.route('/<path:dummy>', methods=['GET'])
+def AdminRedirect(dummy):
+    return send_from_directory('public', 'index.html')
+
+
 @app.errorhandler(BadRequest)
 def error_handler(error):
     return handle_bad_request(error)
-
-
-if __name__ == "__main__":
-    app.run()
