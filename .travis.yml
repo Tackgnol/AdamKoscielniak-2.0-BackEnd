@@ -14,4 +14,4 @@ env:
 
 
 after_success:
-  find . -type f -exec curl -u $SFTP_USER:$SFTP_PASS --ftp-create-dirs -T {} ftps://s25.mydevil.pl/domains/adamkoscielniak.eu.org/public_python/{} \;
+  find . -type f -exec curl -u SFTP_USER:SFTP_PASS --ftp-create-dirs -T {} ftps://s25.mydevil.pl/domains/adamkoscielniak.eu.org/public_python/{} \;
