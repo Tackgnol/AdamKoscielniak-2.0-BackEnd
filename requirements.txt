@@ -19,6 +19,4 @@ PyJWT==1.6.4
 pymongo==3.7.2
 pytz==2018.7
 six==1.11.0
-sqlite3==0.0.0
-Tkinter==0.0.0
 Werkzeug==0.14.1
