@@ -8,7 +8,7 @@ port = os.environ['USER_PORT']
 
 print(host)
 
-srv = sftp.Connection(host=host,username=login, password=password, port=port)
+srv = sftp.Connection(host=host,username=login, password=password, port=port, log=True)
 
 
 
