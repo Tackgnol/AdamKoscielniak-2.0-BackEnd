@@ -13,5 +13,5 @@ env:
   - secure: mMAE6xVLLn/s1vz17ZmHjmPbmXLnnUvutN1rjnDsTz32KRYn5wpM3LbL6+ZnCzVrgA79wkdMmJM4uKr5se/IEuCCC0QQgkqBCpTCky1bEInvldHCev9/b3THY2PJZTjYXX1/1egYdyN42TvyghJoLP5eFsr2vXnlPvKNtCynRZiklRx2UI2tY0WAQhBHZjPFaN/kOk5peNWStu1XPf+hRx9267ejDjR/Q4WVtC4KTpIXSbNwey3DBleyDvZtiUpRBoH5kK3ojGgcij7kwpgjs++EYJtXqaHiPwXiRMeq92AsBzI5+iW96IdwdAumUREZPO1U2X9DScJy/YOyOOqbdn0V1udxluoeJcS5drCFmpVeSmrKboeXJNzo6iMW8D0HRdtHzOpSPXx+4fZ+/twXfE6mAjSySXz1Cj5vgGZtA1yXC1KAy1aawyVSonrVijblobcnUDGxiy+qQxJskB+gicv3oN4spjinTl8E23To+5PHAPocl59yQrsHWcaZzoNJYaEVRO2tOctqNhhcjHBfitC4/YQ9Hcg+JefhoFXt0u22qFUBrM/np7DOWxxry8VqxeODnupg0KhJJtNmomgu6dyb6I09g2LVK6YtOslD5kIqEEMbC+9cvqfq4/dD4VfT4A2WTilQn5BsbEyA8k8iRD52ajyTxYNAvUk0Kjnf2NI=
 
 
-after_success:
-  find . -type f -exec curl -u SFTP_USER:SFTP_PASS --ftp-create-dirs -T {} ftps://s25.mydevil.pl/domains/adamkoscielniak.eu.org/public_python/{} \;
+script:
+  copy.py
