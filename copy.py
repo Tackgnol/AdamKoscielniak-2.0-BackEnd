@@ -1,12 +1,12 @@
 import  pysftp
 import os
 
-password = os.environ['SFTP_PASS']
-login= os.environ['SFTP_USER']
-host = os.environ['SFTP_HOST']
-port = os.environ['SFTP_PORT']
+password = os.environ['USER_PASS']
+login= os.environ['USER_USER']
+host = os.environ['USER_HOST']
+port = os.environ['USER_PORT']
 
-srv = pysftp.Connection(host=host, username=login, password=password, port=port)
+srv = pysftp.Connection(host,login,password, port=port)
 
 with srv.cd('domains/adamkoscielniak.eu.org/public_python'):
     srv.rmdir('Controllers')
