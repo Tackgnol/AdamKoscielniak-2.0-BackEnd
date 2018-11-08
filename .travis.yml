@@ -14,4 +14,4 @@ env:
 
 
 script:
-  copy.py
+  ./copy.py
