@@ -8,9 +8,10 @@ port = os.environ['USER_PORT']
 
 print(host)
 
+cnopts = sftp.CnOpts()
+cnopts.hostkeys = None
+
 srv = sftp.Connection(host=host,username=login, password=password, port=port, log=True)
-
-
 
 with srv.cd('domains/adamkoscielniak.eu.org/public_python'):
     srv.rmdir('Controllers')
