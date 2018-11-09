@@ -3,9 +3,9 @@ import os
 import  sys
 
 
-login= sys.argv[1]
-password = sys.argv[2]
-host = sys.argv[3]
+login= sys.argv[0]
+password = sys.argv[1]
+host = sys.argv[2]
 
 
 print(password)
