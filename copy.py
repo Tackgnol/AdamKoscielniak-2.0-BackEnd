@@ -1,10 +1,12 @@
 from ftplib import  FTP
 import os
+import  sys
 
-password = os.environ['USER_PASS']
-login= os.environ['USER_NAME']
-host = os.environ['USER_HOST']
-port = os.environ['USER_PORT']
+
+login= sys.argv[1]
+password = sys.argv[2]
+host = sys.argv[3]
+
 
 print(password)
 print(login)
