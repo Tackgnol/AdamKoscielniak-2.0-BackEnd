@@ -1,4 +1,4 @@
-import  pysftp as sftp
+import ftplib
 import os
 
 password = os.environ['USER_PASS']
@@ -6,12 +6,9 @@ login= os.environ['USER_NAME']
 host = os.environ['USER_HOST']
 port = os.environ['USER_PORT']
 
-print(host)
 
-cnopts = sftp.CnOpts()
-cnopts.hostkeys = None
 
-srv = sftp.Connection(host=host,username=login, password=password, port=port, log=True)
+
 
 with srv.cd('domains/adamkoscielniak.eu.org/public_python'):
     srv.rmdir('Controllers')
@@ -31,3 +28,5 @@ with srv.cd('domains/adamkoscielniak.eu.org/public_python'):
     srv.put('main.py')
     srv.put('passanger_wsgi.py')
 srv.close()
+
+def uploadFile
