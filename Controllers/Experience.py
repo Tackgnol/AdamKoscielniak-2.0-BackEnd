@@ -78,7 +78,6 @@ def UpdateExperienceById(id):
         updateDbObj = dbObj.to_mongo()
         for (key, value) in update.items():
             updateDbObj[key] = value
-            print(value)
 
         del updateDbObj['_id']
         dbObj.update(**updateDbObj)
@@ -105,10 +104,15 @@ def GetExperiences():
         'to') is not None else '3000-01-01'
     expSkills = request.args.get('skills').split(',') if request.args.get(
         'skills') is not None else []
+
     try:
         parsedDateFrom = datetime.strptime(expFrom, '%Y-%m-%d')
         parsedDateTo = datetime.strptime(expTo, '%Y-%m-%d')
 
+        if(request.args.get('to') is None):
+            toQueryObject = (Q(EndDate__gte=parsedDateFrom) | Q(EndDate=None))
+        else:
+            toQueryObject = Q(EndDate__gte=parsedDateFrom)
     except ValueError:
         result.AddError('Invalid Datetime format')
 
@@ -117,7 +121,7 @@ def GetExperiences():
         return result.ToResponse()
 
     query_experience = Experience.objects(
-        Q(BeginDate__lte=parsedDateTo) & Q(EndDate__gte=parsedDateFrom))
+        Q(BeginDate__lte=parsedDateTo) & toQueryObject)
 
     if len(expSkills) > 0:
         query_experience = query_experience.filter(Skills__all=expSkills)
@@ -149,15 +153,20 @@ def TotalTimeWorked(expFrom, expTo, expSkills):
     if parsedDateFrom > parsedDateTo:
         return 0
 
+    if(request.args.get('to') is None):
+        toQueryObject = (Q(EndDate__gte=parsedDateFrom) | Q(EndDate=None))
+    else:
+        toQueryObject = Q(EndDate__gte=parsedDateFrom)
+
     query_experience = Experience.objects(
-        Q(BeginDate__lte=parsedDateTo) & Q(EndDate__gte=parsedDateFrom))
+        Q(BeginDate__lte=parsedDateTo) & toQueryObject)
 
     if len(expSkills) > 0:
         query_experience = query_experience.filter(Skills__all=expSkills)
     totalHours = 0
     for experience in query_experience:
         start = experience.BeginDate
-        end = experience.EndDate
+        end = experience.EndDate if experience.EndDate is not None else datetime.now()
         daygenerator = (start + timedelta(x + 1)
                         for x in range((end - start).days))
         days = sum(1 for day in daygenerator if day.weekday() < 5)
@@ -168,11 +177,17 @@ def TotalTimeWorked(expFrom, expTo, expSkills):
 def TotalWorkProjects(expFrom, expTo, expSkills):
     parsedDateFrom = datetime.strptime(expFrom, '%Y-%m-%d').date()
     parsedDateTo = datetime.strptime(expTo, '%Y-%m-%d').date()
+
+    if(request.args.get('to') is None):
+        toQueryObject = (Q(EndDate__gte=parsedDateFrom) | Q(EndDate=None))
+    else:
+        toQueryObject = Q(EndDate__gte=parsedDateFrom)
+
     if parsedDateFrom > parsedDateTo:
         return 0
 
     query_experience = Experience.objects(
-        Q(BeginDate__lte=parsedDateTo) & Q(EndDate__gte=parsedDateFrom))
+        Q(BeginDate__lte=parsedDateTo) & toQueryObject)
 
     if len(expSkills) > 0:
         query_experience = query_experience.filter(Skills__all=expSkills)
