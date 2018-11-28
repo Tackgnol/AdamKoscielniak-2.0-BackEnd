@@ -112,9 +112,7 @@ def GetExperiences():
             result.AddError('Date from cannot be greater then Date from')
             return result.ToResponse()
 
-
         toQueryObject = (Q(EndDate__gte=parsedDateFrom) | Q(EndDate=None))
-
 
         query_experience = Experience.objects(
             Q(BeginDate__lte=parsedDateTo) & toQueryObject)
@@ -146,16 +144,11 @@ def DeleteExperieceById(id):
 
 
 def TotalTimeWorked(expFrom, expTo, expSkills):
-
     parsedDateFrom = datetime.strptime(expFrom, '%Y-%m-%d').date()
     parsedDateTo = datetime.strptime(expTo, '%Y-%m-%d').date()
     if parsedDateFrom > parsedDateTo:
         return 0
-
-    if(request.args.get('to') is None):
-        toQueryObject = (Q(EndDate__gte=parsedDateFrom) | Q(EndDate=None))
-    else:
-        toQueryObject = Q(EndDate__gte=parsedDateFrom)
+    toQueryObject = (Q(EndDate__gte=parsedDateFrom) | Q(EndDate=None))
 
     query_experience = Experience.objects(
         Q(BeginDate__lte=parsedDateTo) & toQueryObject)
@@ -169,7 +162,7 @@ def TotalTimeWorked(expFrom, expTo, expSkills):
         daygenerator = (start + timedelta(x + 1)
                         for x in range((end - start).days))
         days = sum(1 for day in daygenerator if day.weekday() < 5)
-        totalHours = totalHours + days*8
+        totalHours = totalHours + days * 8
     return totalHours
 
 
@@ -177,10 +170,7 @@ def TotalWorkProjects(expFrom, expTo, expSkills):
     parsedDateFrom = datetime.strptime(expFrom, '%Y-%m-%d').date()
     parsedDateTo = datetime.strptime(expTo, '%Y-%m-%d').date()
 
-    if(request.args.get('to') is None):
-        toQueryObject = (Q(EndDate__gte=parsedDateFrom) | Q(EndDate=None))
-    else:
-        toQueryObject = Q(EndDate__gte=parsedDateFrom)
+    toQueryObject = (Q(EndDate__gte=parsedDateFrom) | Q(EndDate=None))
 
     if parsedDateFrom > parsedDateTo:
         return 0
@@ -192,5 +182,6 @@ def TotalWorkProjects(expFrom, expTo, expSkills):
         query_experience = query_experience.filter(Skills__all=expSkills)
     totalProjects = 0
     for experience in query_experience:
-        totalProjects = totalProjects + len((experience.Projects))
+        print((experience))
+        totalProjects = totalProjects + len(experience.Projects)
     return totalProjects
