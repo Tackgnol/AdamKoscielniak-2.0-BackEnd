@@ -106,27 +106,26 @@ def GetExperiences():
         'skills') is not None else []
 
     try:
-        parsedDateFrom = datetime.strptime(expFrom, '%Y-%m-%d')
-        parsedDateTo = datetime.strptime(expTo, '%Y-%m-%d')
+        parsedDateFrom = datetime.strptime(expFrom, '%Y-%m-%d').date()
+        parsedDateTo = datetime.strptime(expTo, '%Y-%m-%d').date()
+        if parsedDateFrom > parsedDateTo:
+            result.AddError('Date from cannot be greater then Date from')
+            return result.ToResponse()
 
-        if(request.args.get('to') is None):
-            toQueryObject = (Q(EndDate__gte=parsedDateFrom) | Q(EndDate=None))
-        else:
-            toQueryObject = Q(EndDate__gte=parsedDateFrom)
+
+        toQueryObject = (Q(EndDate__gte=parsedDateFrom) | Q(EndDate=None))
+
+
+        query_experience = Experience.objects(
+            Q(BeginDate__lte=parsedDateTo) & toQueryObject)
+
+        if len(expSkills) > 0:
+            query_experience = query_experience.filter(Skills__all=expSkills)
+
+        result.Value = query_experience.to_json()
+
     except ValueError:
         result.AddError('Invalid Datetime format')
-
-    if parsedDateFrom > parsedDateTo:
-        result.AddError('Date from cannot be greater then Date from')
-        return result.ToResponse()
-
-    query_experience = Experience.objects(
-        Q(BeginDate__lte=parsedDateTo) & toQueryObject)
-
-    if len(expSkills) > 0:
-        query_experience = query_experience.filter(Skills__all=expSkills)
-
-    result.Value = query_experience.to_json()
 
     return result.ToResponse()
 
