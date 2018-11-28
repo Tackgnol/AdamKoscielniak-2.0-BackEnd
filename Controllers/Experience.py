@@ -182,6 +182,5 @@ def TotalWorkProjects(expFrom, expTo, expSkills):
         query_experience = query_experience.filter(Skills__all=expSkills)
     totalProjects = 0
     for experience in query_experience:
-        print((experience))
         totalProjects = totalProjects + len(experience.Projects)
     return totalProjects
