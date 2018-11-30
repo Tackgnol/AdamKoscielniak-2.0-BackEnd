@@ -43,6 +43,14 @@ def GetSkills():
 
     return result.ToResponse()
 
+@app.route('/skill/list', methods=['GET'])
+def GetListOfSkillGroups():
+    result = Result()
+    skills = SkillGroup.objects()
+    skillList = [skill.Name for skill in skills]
+    result.Value = json.dumps(skillList)
+    return result.ToResponse()
+
 
 @app.route('/skill/<id>', methods=['GET'])
 def GetSkillGroupById(id):
@@ -57,9 +65,16 @@ def GetSkillGroupById(id):
 
     return result.ToResponse()
 
-@app.route('/skill/list', methods=['GET'])
-def GetListOfSkillGroups():
+@app.route('/skill/<id>/list', methods=['GET'])
+def GetSkillListById(id):
     result = Result()
+    try:
+        skill = SkillGroup.objects(Id=id)
+        result.Value = skill.first().to_json()
+    except AttributeError:
+        result.AddError('SkillGroup not found')
+    except:
+        result.AddError('Unknown error consult the system administrator')
 
     return result.ToResponse()
 

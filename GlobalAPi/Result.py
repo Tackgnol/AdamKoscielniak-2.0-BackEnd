@@ -24,7 +24,7 @@ class Result:
         responseDict = {
             'Errors': self.Errors,
             'Warnings': self.Warnings,
-            'Value': json.loads(self.Value),
+            'Value': json.loads(self.Value) if self.Value != None else None,
         }
         if len(self.Errors) > 0:
             raise(BadRequest("There are errors in the query", payload=responseDict))
