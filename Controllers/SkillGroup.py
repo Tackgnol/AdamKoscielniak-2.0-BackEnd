@@ -57,6 +57,11 @@ def GetSkillGroupById(id):
 
     return result.ToResponse()
 
+@app.route('/skill/list', methods=['GET'])
+def GetListOfSkillGroups():
+    result = Result()
+
+    return result.ToResponse()
 
 @app.route('/skill/<id>', methods=['PUT'])
 @jwt_required
