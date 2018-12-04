@@ -4,6 +4,7 @@ from GlobalAPi.Result import Result
 from flask import request
 import json
 import mongoengine
+from itertools import chain
 from mongoengine.errors import InvalidQueryError
 from flask_jwt_extended import jwt_required
 
@@ -47,7 +48,7 @@ def GetSkills():
 def GetListOfSkillGroups():
     result = Result()
     skills = SkillGroup.objects()
-    skillList = [skill.Name for skill in skills]
+    skillList = [{'id':skill.Id, 'name':skill.Name} for skill in skills]
     result.Value = json.dumps(skillList)
     return result.ToResponse()
 
@@ -65,17 +66,19 @@ def GetSkillGroupById(id):
 
     return result.ToResponse()
 
-@app.route('/skill/<id>/list', methods=['GET'])
-def GetSkillListById(id):
+@app.route('/skill/<ids>/list', methods=['GET'])
+def GetSkillListById(ids):
     result = Result()
     try:
-        skill = SkillGroup.objects(Id=id)
-        result.Value = skill.first().to_json()
+        idList = ids.split(',')
+        skills = SkillGroup.objects(Id__in=idList)
+        skillList = [skill.Name for skill in list(chain.from_iterable([skill.Skills for skill in skills]))]
+
     except AttributeError:
         result.AddError('SkillGroup not found')
     except:
         result.AddError('Unknown error consult the system administrator')
-
+    result.Value = json.dumps(skillList)
     return result.ToResponse()
 
 @app.route('/skill/<id>', methods=['PUT'])
@@ -113,7 +116,7 @@ def DeleteSkillGroupById(id):
         toDelete = SkillGroup.objects.filter(Id=id).first()
         toDelete.delete()
         result.Value = json.dumps(
-            {'id': id, 'message': 'Succesfully removed element' + id})
+            {'id': id, 'message': 'Successfully removed element' + id})
     except AttributeError:
         result.AddError(
             'This skill does not exist, perhaps it was already deleted?')
