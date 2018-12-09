@@ -1,3 +1,5 @@
+import json
+
 from main import app, jwt
 from Models.User import User, TokenInfo
 from GlobalAPi.Result import Result
@@ -53,10 +55,10 @@ def login():
         access_token = create_access_token(
             identity=forToken)
         refresh_token = create_refresh_token(identity=forToken)
-        result.Value = {
+        result.Value = json.dumps( {
             'access_token': access_token,
             'refresh_token': refresh_token
-        }
+        })
 
     else:
         result.AddError("Invalid login or password")
@@ -81,7 +83,7 @@ def refresh():
         'access_token': create_access_token(identity=forToken),
         'refresh_token': create_refresh_token(identity=forToken)
     }
-    result.Value = ret
+    result.Value = json.dumps(ret)
     return result.ToResponse()
 
 

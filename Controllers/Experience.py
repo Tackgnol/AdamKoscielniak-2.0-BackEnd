@@ -104,7 +104,6 @@ def GetExperiences():
         'to') is not None else '3000-01-01'
     expSkills = request.args.get('skills').split(',') if request.args.get(
         'skills') is not None else []
-
     try:
         parsedDateFrom = datetime.strptime(expFrom, '%Y-%m-%d').date()
         parsedDateTo = datetime.strptime(expTo, '%Y-%m-%d').date()
@@ -118,7 +117,7 @@ def GetExperiences():
             Q(BeginDate__lte=parsedDateTo) & toQueryObject)
 
         if len(expSkills) > 0:
-            query_experience = query_experience.filter(Skills__all=expSkills)
+            query_experience = query_experience.filter(Skills__in=expSkills)
 
         result.Value = query_experience.to_json()
 
@@ -146,6 +145,7 @@ def DeleteExperieceById(id):
 def TotalTimeWorked(expFrom, expTo, expSkills):
     parsedDateFrom = datetime.strptime(expFrom, '%Y-%m-%d').date()
     parsedDateTo = datetime.strptime(expTo, '%Y-%m-%d').date()
+
     if parsedDateFrom > parsedDateTo:
         return 0
     toQueryObject = (Q(EndDate__gte=parsedDateFrom) | Q(EndDate=None))
@@ -154,7 +154,7 @@ def TotalTimeWorked(expFrom, expTo, expSkills):
         Q(BeginDate__lte=parsedDateTo) & toQueryObject)
 
     if len(expSkills) > 0:
-        query_experience = query_experience.filter(Skills__all=expSkills)
+        query_experience = query_experience.filter(Skills__in=expSkills)
     totalHours = 0
     for experience in query_experience:
         start = experience.BeginDate
@@ -179,7 +179,7 @@ def TotalWorkProjects(expFrom, expTo, expSkills):
         Q(BeginDate__lte=parsedDateTo) & toQueryObject)
 
     if len(expSkills) > 0:
-        query_experience = query_experience.filter(Skills__all=expSkills)
+        query_experience = query_experience.filter(Skills__in=expSkills)
     totalProjects = 0
     for experience in query_experience:
         totalProjects = totalProjects + len(experience.Projects)

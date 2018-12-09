@@ -3,7 +3,6 @@ from GlobalAPi.Result import Result
 from flask import request
 import json
 import mongoengine
-from mongoengine.errors import InvalidQueryError
 import sys
 from Controllers.Experience import TotalTimeWorked, TotalWorkProjects
 from Controllers.SkillGroup import SkillCount
@@ -18,6 +17,7 @@ def GetCounts():
         'to') is not None else '3000-01-01'
     expSkills = request.args.get('skills').split(',') if request.args.get(
         'skills') is not None else []
+
     try:
         timeWorked = TotalTimeWorked(expFrom, expTo, expSkills)
         projectsWorked = TotalWorkProjects(expFrom, expTo, expSkills)
