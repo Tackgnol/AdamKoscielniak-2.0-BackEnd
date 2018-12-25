@@ -23,6 +23,7 @@ import Controllers.Certificate
 import Controllers.Hobby
 import Controllers.User
 import Controllers.Summary
+import Controllers.Socials
 
 cfg = Config()
 app.config['JWT_SECRET_KEY'] = cfg.JWT_SECRET
