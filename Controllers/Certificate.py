@@ -4,13 +4,16 @@ from GlobalAPi.Result import Result
 from flask import request
 import json
 import mongoengine
+from flask_jwt_extended import jwt_required
 from mongoengine.errors import InvalidQueryError
 
+
 @app.route('/certificate/add', methods=['POST'])
+@jwt_required
 def AddCertificate():
     result = Result()
-    certificate = request.get_json(force = True)
-    certificateJSON = json.dumps(certificate) 
+    certificate = request.get_json(force=True)
+    certificateJSON = json.dumps(certificate)
     try:
         job = Certificate.from_json(certificateJSON)
         job.save()
@@ -22,6 +25,7 @@ def AddCertificate():
         result.AddError('Unknown error consult the system administrator')
 
     return result.ToResponse()
+
 
 @app.route('/certificate/<id>', methods=['GET'])
 def GetCertificateById(id):
@@ -35,35 +39,41 @@ def GetCertificateById(id):
         result.AddError('Unknown error consult the system administrator')
 
     return result.ToResponse()
-    
+
+
 @app.route('/certificate/<id>', methods=['PUT'])
+@jwt_required
 def UpdateCertificateById(id):
     result = Result()
-    update = request.get_json(force = True)
+    update = request.get_json(force=True)
     try:
-        dbObj = Certificate.objects.filter(Id = id).first()
+        dbObj = Certificate.objects.filter(Id=id).first()
         updateDbObj = dbObj.to_mongo()
-        for (key,value) in update.items():
+        for (key, value) in update.items():
             updateDbObj[key] = value
-        
+
         del updateDbObj['_id']
         dbObj.update(**updateDbObj)
         result.Value = dbObj.to_json()
     except AttributeError:
-        result.AddError('This certificate does not exist, perhaps you wished to add it?')
-    except InvalidQueryError: 
+        result.AddError(
+            'This certificate does not exist, perhaps you wished to add it?')
+    except InvalidQueryError:
         result.AddError('Invalid field in the update statement, please review')
     except:
-        result.AddError('Unknown error consult the system administrator')  
+        result.AddError('Unknown error consult the system administrator')
     return result.ToResponse()
+
+
 @app.route('/certificate/<id>', methods=['DELETE'])
+@jwt_required
 def DeleteCertificateById(id):
     result = Result()
-    try: 
-        toDelete = Certificate.objects.filter(Id = id).first()
+    try:
+        toDelete = Certificate.objects.filter(Id=id).first()
         toDelete.delete()
         result.Value = "Element Removed succesfully"
     except AttributeError:
-        result.AddError('This certificate does not exist, perhaps it was already deleted?')
+        result.AddError(
+            'This certificate does not exist, perhaps it was already deleted?')
     return result.ToResponse()
-

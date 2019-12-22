@@ -1,3 +1,4 @@
 Config/config.py
 .vscode
 *.pyc
+.idea

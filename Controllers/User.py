@@ -1,3 +1,5 @@
+import json
+
 from main import app, jwt
 from Models.User import User, TokenInfo
 from GlobalAPi.Result import Result
@@ -10,6 +12,7 @@ from flask_jwt_extended import (
 )
 from flask import Flask, request
 import mongoengine
+from datetime import timedelta
 
 
 @jwt.user_claims_loader
@@ -49,13 +52,13 @@ def login():
     forToken = TokenInfo(username, userRole, userId)
 
     if checkPassword(password, userHash):
-
-        access_token = create_access_token(identity=forToken)
+        access_token = create_access_token(
+            identity=forToken)
         refresh_token = create_refresh_token(identity=forToken)
-        result.Value = {
+        result.Value = json.dumps( {
             'access_token': access_token,
             'refresh_token': refresh_token
-        }
+        })
 
     else:
         result.AddError("Invalid login or password")
@@ -72,7 +75,6 @@ def refresh():
     loggingUser = User.objects(Email=username).first()
     userRole = loggingUser.AccountType
     userId = loggingUser.Id
-
     forToken = TokenInfo(username, userRole, userId)
     if loggingUser is None:
         result.AddError("User not found/Invalid Token")
@@ -81,7 +83,7 @@ def refresh():
         'access_token': create_access_token(identity=forToken),
         'refresh_token': create_refresh_token(identity=forToken)
     }
-    result.Value = ret
+    result.Value = json.dumps(ret)
     return result.ToResponse()
 
 
