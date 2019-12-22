@@ -53,7 +53,7 @@ def GetExperienceById(id):
 def GetCurrentExperience():
     result = Result()
     try:
-        experience = Experience.objects().first()
+        experience = Experience.objects().order_by('-BeginDate').first()
         experience.Projects = None
         result.Value = experience.to_json()
     except AttributeError:
@@ -114,7 +114,7 @@ def GetExperiences():
         toQueryObject = (Q(EndDate__gte=parsedDateFrom) | Q(EndDate=None))
 
         query_experience = Experience.objects(
-            Q(BeginDate__lte=parsedDateTo) & toQueryObject)
+            Q(BeginDate__lte=parsedDateTo) & toQueryObject).order_by('-BeginDate')
 
         if len(expSkills) > 0:
             query_experience = query_experience.filter(Skills__in=expSkills)
