@@ -9,6 +9,10 @@ env:
   - secure: 0Tp03NBx7FxnGvUS277ZpwtpH2ptzi0vnwP1xVx4Uk3gRYaxn83vQFLSEwOLagIYqorUMa3sOsL2q7R0ie+NSfCrH4S7Xn5w4A1WCTCaZLlSKe8o9/JrdhkFJSf0hR6HrK1mFYFRCCzhzCF0/zVkT0ONO08xam8Bqw4fT6IF1Te2PQyLTiEnRBn4HAp9yWq/T+wt9BT2MfnU28WfdiH0fQhXw6pmwW6rFh5/kvK6F+3B/JcGfJEoKGkLmA/iTgMirTjfm9e65PWaPgMiYXAFZaEMDSZJR9XFYRQdA96SH8sOva7z9Zdl9GV23I/x1GAuqdLoBbOsOVaVT4w19SL4RGLITg9+wfaNn2XHONw4aYGoUb9Qy67TxfchNB/CvGViBqjUNQDxQzJkdI6kjcAR3uvmVikkAOSq9JpEh+xIAaO8NKLIV6lKaa4bmI0AIvkQvHGlCURz62wL+/BV5IDL2IdOnKmB+14IP9DU9tFgFAHyrEBIby+4YE1QlUDdMuNZrSYlIzWekwhgUQS/f/I8Lv+TdhP15QV4n5FRyjZBQcb/aqoeAbikc4NjzgXov42eedHqbeS93SvXLn+9feEZcDvET8sRJkhwK+smSAeliKXkM8qsNZtxEQ/4EOXbIha8IDcJDPjBElr1spOryIpWYDHiclGNdrHQYWIA2ywD7mE=
   - secure: HT+JR0P9iyb2uqXjzRD3+JQUzb1Ey4QmYIibs2b7e09DTD7mdfO+MPeoXRl6YrNiwJqH4xX2ZPUXt8ghsjZblDr2Bz9osTNkB4kOwOIoZMgAU2fMQ6/LQIZZA956faj/++vttdcujvLXKTqMwoJd8zVFgHXcDkweKVGVA7PjA1zAaevuK5b3Q3sfk3cEL6pLUFH6lVgZJTV8Y601ls3o89wyef+4tn2PMTcrbiuHs41NDLwgh9hldiaUiN0rSFOUDXBPY7+b/YFQC5SDl4hO5NFtgAc4+zbLhmlQEimRpM5p76EHd9yWtyeoRKNkcaQbVVFGHoQ3di3zmdDnwshUupcoNPRRAKOckYnQuBRFffVrgeDHwCT5krp+tiJbo7cqwh7Acqr0PkjsO4P/n+s3nEdwqy8BOhXRc2/rE0pz/FhWjkGvF3Qb0joGud+kEn6lPWO2WouqviXYFEBxIHTVZ6/6FUoHYvmQTK+R2xPRvm4qPbkR5CF0YWkCHWYkDjyn2+vNdIAdtKB5EMa4UGMU/2wmYgq0XJRj1OVVHcA8SQiawWDu39f4IzlEkMIrGnavEJOJqTOeZ9HojU/pNPoY788YGHFR4WCLhKh4J09ZAlfyCjgTCEiyFkCB78D92lhyvSeMjlY9OYH1q5j8OwFbzkA5Y03y6KE0mrsyqHGaoe0=
 
-after_success:
-- echo "${SFTP_KEY}" | base64 --decode >/tmp/sftp_rsa
-- rsync -r --quiet -e"ssh -v -i /tmp/sftp_rsa" . ${SFTP_USER}:${SFTP_PASSWORD}@s25.mydevil.net/public_python
+jobs:
+  include:
+    - stage: deploy
+
+deploy:
+  - echo "${SFTP_KEY}" | base64 --decode >/tmp/sftp_rsa
+  - rsync -r --quiet -e"ssh -v -i /tmp/sftp_rsa" . ${SFTP_USER}:${SFTP_PASSWORD}@s25.mydevil.net/public_python
