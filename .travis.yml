@@ -13,6 +13,13 @@ jobs:
   include:
     - stage: deploy
 
+
 deploy:
-  - echo "${SFTP_KEY}" | base64 --decode >/tmp/sftp_rsa
-  - rsync -r --quiet -e"ssh -v -i /tmp/sftp_rsa" . ${SFTP_USER}:${SFTP_PASSWORD}@s25.mydevil.net/public_python
+  provider: script
+  skip_cleanup: true
+  script: echo "${SFTP_KEY}" | base64 --decode >/tmp/sftp_rsa && rsync -r --delete-after --quiet $TRAVIS_BUILD_DIR/<dir> <ssh-user>@<deploy-host>:path/to/files
+  on:
+    branch: feature/travis
+
+notifications:
+  email: false
