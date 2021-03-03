@@ -17,7 +17,7 @@ jobs:
 deploy:
   provider: script
   skip_cleanup: true
-  script: echo "${SFTP_KEY}" | base64 --decode >/tmp/sftp_rsa && rsync -r --delete-after --quiet $TRAVIS_BUILD_DIR/<dir> <ssh-user>@<deploy-host>:path/to/files
+  script: echo "${SFTP_KEY}" | base64 --decode >/tmp/sftp_rsa && rsync -r -e"ssh -v -i /tmp/sftp_rsa" / ${SFTP_USER}:${SFTP_PASSWORD}@s25.mydevil.net/public_python
   on:
     branch: feature/travis
 
