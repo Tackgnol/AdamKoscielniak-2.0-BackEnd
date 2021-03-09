@@ -10,7 +10,7 @@ Flask-Mail==0.9.1
 Flask-RESTful==0.3.6
 Flask-SSLify==0.1.5
 itsdangerous==1.1.0
-Jinja2==2.10
+Jinja2==2.10.1
 MarkupSafe==1.0
 mongoengine==0.15.3
 numpy==1.15.3
